@@ -50,7 +50,7 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
         <p className="mb-2 mt-4 leading-normal text-muted-foreground">
           Download the{' '}
           <a className='text-base font-semibold' href="https://marketplace.visualstudio.com/items?itemName=waseemhnyc.viam-robotics-vsc-code-snippets">Viam Code Extension Tool</a>{' '}
-          to help you get started with Viam.
+          to help you get started.
         </p>
       </div>
     </div>
