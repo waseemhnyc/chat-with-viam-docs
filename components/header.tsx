@@ -38,11 +38,11 @@ export async function Header() {
           </Sidebar>
         ) : (
           <Link href="/" target="_blank" rel="nofollow">
-            <IconNextChat className="mr-2 h-6 w-6 dark:hidden" inverted />
-            <IconNextChat className="mr-2 hidden h-6 w-6 dark:block" />
+            {/* <IconNextChat className="mr-2 h-6 w-6 dark:hidden" inverted />
+            <IconNextChat className="mr-2 hidden h-6 w-6 dark:block" /> */}
           </Link>
         )}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <IconSeparator className="h-6 w-6 text-muted-foreground/50" />
           {session?.user ? (
             <UserMenu user={session.user} />
@@ -54,7 +54,7 @@ export async function Header() {
               className="-ml-2"
             />
           )}
-        </div>
+        </div> */}
       </div>
       <div className="flex items-center justify-end space-x-2">
         <a
@@ -75,7 +75,7 @@ export async function Header() {
           {/* <IconVercel className="mr-2" /> */}
           <span className="hidden sm:block">Viam Official Site</span>
           <span className="sm:hidden">Viam Official Site</span>
-          <IconArrowRight className="ml-2" />
+          {/* <IconArrowRight className="ml-2" /> */}
         </a>
       </div>
     </header>

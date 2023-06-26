@@ -14,7 +14,6 @@ export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
     >
       Built with the help of{' '}
       <ExternalLink href="https://github.com/vercel-labs/ai-chatbot">Vercel AI Chatbot</ExternalLink>
-      .
     </p>
   )
 }

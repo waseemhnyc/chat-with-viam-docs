@@ -23,18 +23,13 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
   return (
     <div className="mx-auto max-w-2xl px-4">
       <div className="rounded-lg border bg-background p-8">
-        <h1 className="mb-2 text-lg font-semibold">
-          Welcome to Viam Robotics AI Chatbot!
+        <h1 className="mb-2 text-xl font-semibold">
+          Welcome to Viam Robotics AI Chatbot
         </h1>
         <p className="mb-2 leading-normal text-muted-foreground">
           Ask me any questions about{' '}
           <a className='text-base font-semibold' href="https://www.viam.com">Viam Robotics</a>{' '}
           and I&apos;ll attempt to answer.
-        </p>
-        <p className="mb-2 leading-normal text-muted-foreground">
-          Download the{' '}
-          <a className='text-base font-semibold' href="https://marketplace.visualstudio.com/items?itemName=waseemhnyc.viam-robotics-vsc-code-snippets">Viam Code Extension Tool</a>{' '}
-          to help you get started with Viam.
         </p>
         <p className="leading-normal text-muted-foreground">
           You can start a conversation below or try the following examples:
@@ -52,6 +47,11 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
             </Button>
           ))}
         </div>
+        <p className="mb-2 mt-4 leading-normal text-muted-foreground">
+          Download the{' '}
+          <a className='text-base font-semibold' href="https://marketplace.visualstudio.com/items?itemName=waseemhnyc.viam-robotics-vsc-code-snippets">Viam Code Extension Tool</a>{' '}
+          to help you get started with Viam.
+        </p>
       </div>
     </div>
   )
