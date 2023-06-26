@@ -42,18 +42,14 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
         previewToken
       }
     })
-  // console.log(isLoading, 'In chat.tsx')
-  // console.log(stop, 'In chat.tsx')
-  // Something to do with the stop method being called
-  // when i use the original code the stop method is called
-  // and the isLoading is set to false
-  // but when i use the code below the stop method is not called
-  // and the isLoading is left to true
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
+            <div className="pb-10">
+              <EmptyScreen setInput={setInput}  />
+            </div>
             <ChatList messages={messages} />
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>

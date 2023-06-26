@@ -11,6 +11,7 @@ import {
   IconGitHub,
   IconNextChat,
   IconSeparator,
+  IconArrowRight,
   IconVercel
 } from '@/components/ui/icons'
 import { SidebarFooter } from '@/components/sidebar-footer'
@@ -58,21 +59,23 @@ export async function Header() {
       <div className="flex items-center justify-end space-x-2">
         <a
           target="_blank"
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
+          href="https://marketplace.visualstudio.com/items?itemName=waseemhnyc.viam-robotics-vsc-code-snippets"
           rel="noopener noreferrer"
           className={cn(buttonVariants({ variant: 'outline' }))}
         >
-          <IconGitHub />
-          <span className="ml-2 hidden md:flex">GitHub</span>
+          <span className="flex">VS Code Extension</span>
+          {/* <IconGitHub />
+          <span className="ml-2 hidden md:flex">GitHub</span> */}
         </a>
         <a
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
+          href="https://www.viam.com/"
           target="_blank"
           className={cn(buttonVariants())}
         >
-          <IconVercel className="mr-2" />
-          <span className="hidden sm:block">Deploy to Vercel</span>
-          <span className="sm:hidden">Deploy</span>
+          {/* <IconVercel className="mr-2" /> */}
+          <span className="hidden sm:block">Viam Official Site</span>
+          <span className="sm:hidden">Viam Official Site</span>
+          <IconArrowRight className="ml-2" />
         </a>
       </div>
     </header>
