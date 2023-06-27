@@ -1,99 +1,136 @@
-import { StreamingTextResponse, LangChainStream, Message } from 'ai'
-import { CallbackManager } from 'langchain/callbacks'
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { AIChatMessage, HumanChatMessage } from 'langchain/schema'
+import { LangChainStream } from "@/lib/LangChainStream";
+import { PineconeClient } from "@pinecone-database/pinecone";
+import { StreamingTextResponse } from "ai";
+import { ConversationalRetrievalQAChain } from "langchain/chains";
+// import { RetrievalQAChain, loadQARefineChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import {
+  AIChatMessage,
+  HumanChatMessage,
+  SystemChatMessage,
+} from "langchain/schema";
+import { PineconeStore } from "langchain/vectorstores/pinecone";
+import z from "zod";
 
-// export const runtime = 'edge'
+const ChatSchema = z.object({
+  messages: z.array(
+    z.object({
+      role: z.enum(["system", "user", "assistant"]),
+      content: z.string(),
+      id: z.string().optional(),
+      createdAt: z.date().optional(),
+    })
+  ),
+});
+
+const template = `
+You are an AI assistant that has conversations and help answer questions about Viam Robotics, Robotics and Electronics.
+Provide a conversational answer/response. The documentation for Viam Robotics is located at https://docs.viam.com/.
+You are given the following extracted parts of a long document and a question.
+Provide hyperlinks to the documentation.
+You should only use hyperlinks that are explicitly listed as a source in the context. Do NOT make up a hyperlink that is not listed.
+If the question includes a request for code, provide a code block directly from the documentation.
+If you don't know the answer, just say "Hmm, I'm not sure." Don't try to make up an answer.
+If the question is not about Viam Robotics, Robotics or Electronics, politely inform them that you are tuned to only answer questions about Viam and Robotics.
+If the question is a statement, reply back accordingly.
+
+
+Question: {question}
+=========
+{context}
+=========
+Answer:`
+
+const prompt = PromptTemplate.fromTemplate(
+  template
+);
+
+export const runtime = "edge";
+
+let pinecone: PineconeClient | null = null;
+
+const initPineconeClient = async () => {
+  pinecone = new PineconeClient();
+  await pinecone.init({
+    apiKey: process.env.PINECONE_API_KEY!,
+    environment: process.env.PINECONE_ENVIRONMENT!,
+  });
+};
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
+  const body = await req.json();
 
-  const { stream, handlers } = LangChainStream()
+  try {
+    const { messages } = ChatSchema.parse(body);
 
-  const llm = new ChatOpenAI({
-    openAIApiKey: process.env.OPENAI_API_KEY,
-    streaming: true,
-    callbackManager: CallbackManager.fromHandlers(handlers)
-  })
+    if (pinecone == null) {
+      await initPineconeClient();
+    }
 
-  llm
-    .call(
-      (messages as Message[]).map(m =>
-        m.role == 'user'
-          ? new HumanChatMessage(m.content)
-          : new AIChatMessage(m.content)
+    const pineconeIndex = pinecone!.Index(process.env.PINECONE_INDEX_NAME!);
+
+    const vectorStore = await PineconeStore.fromExistingIndex(
+      new OpenAIEmbeddings(),
+      { pineconeIndex }
+    );
+
+    const pastMessages = messages.map((m) => {
+      if (m.role === "user") {
+        return new HumanChatMessage(m.content);
+      }
+      if (m.role === "system") {
+        return new SystemChatMessage(m.content);
+      }
+      return new AIChatMessage(m.content);
+    });
+
+    const { stream, handlers } = LangChainStream();
+
+    const model = new ChatOpenAI({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+      modelName: "gpt-4",
+      streaming: true,
+    });
+
+    const nonStreamingModel = new ChatOpenAI({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+      modelName: "gpt-4"
+    });
+
+    const chain = ConversationalRetrievalQAChain.fromLLM(
+      model,
+      vectorStore.asRetriever(),
+      {
+        qaChainOptions: {
+          type: "stuff",
+          prompt: prompt
+        },
+        questionGeneratorChainOptions: {
+          llm: nonStreamingModel
+        },
+      }
+    );
+
+    const question = messages[messages.length - 1].content;
+
+    chain
+      .call(
+        {
+          question,
+          chat_history: pastMessages,
+        },
+        [handlers]
       )
-    )
-    .catch(console.error)
+      .catch(console.error);
 
-  return new StreamingTextResponse(stream)
+    return new StreamingTextResponse(stream);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify(error.issues), { status: 422 });
+    }
+
+    return new Response(null, { status: 500 });
+  }
 }
-
-
-
-// import { kv } from '@vercel/kv'
-// import { OpenAIStream, StreamingTextResponse } from 'ai'
-// import { Configuration, OpenAIApi } from 'openai-edge'
-
-// import { auth } from '@/auth'
-// import { nanoid } from '@/lib/utils'
-
-// export const runtime = 'edge'
-
-// export async function POST(req: Request) {
-//   const json = await req.json()
-//   const { messages, previewToken } = json
-//   const session = await auth()
-
-//   if (process.env.VERCEL_ENV !== 'preview') {
-//     if (session == null) {
-//       return new Response('Unauthorized', { status: 401 })
-//     }
-//   }
-
-//   const configuration = new Configuration({
-//     apiKey: previewToken || process.env.OPENAI_API_KEY
-//   })
-
-//   const openai = new OpenAIApi(configuration)
-
-//   const res = await openai.createChatCompletion({
-//     model: 'gpt-3.5-turbo',
-//     messages,
-//     temperature: 0.7,
-//     stream: true
-//   })
-
-//   const stream = OpenAIStream(res, {
-//     async onCompletion(completion) {
-//       const title = json.messages[0].content.substring(0, 100)
-//       const userId = session?.user.id
-//       if (userId) {
-//         const id = json.id ?? nanoid()
-//         const createdAt = Date.now()
-//         const path = `/chat/${id}`
-//         const payload = {
-//           id,
-//           title,
-//           userId,
-//           createdAt,
-//           path,
-//           messages: [
-//             ...messages,
-//             {
-//               content: completion,
-//               role: 'assistant'
-//             }
-//           ]
-//         }
-//         await kv.hmset(`chat:${id}`, payload)
-//         await kv.zadd(`user:chat:${userId}`, {
-//           score: createdAt,
-//           member: `chat:${id}`
-//         })
-//       }
-//     }
-//   })
-
-//   return new StreamingTextResponse(stream)
-// }

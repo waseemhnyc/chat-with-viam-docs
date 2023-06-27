@@ -14,8 +14,8 @@ const exampleMessages = [
     message: 'What is the difference between a Viam Component and a Viam Service?'
   },
   {
-    heading: 'Robot to Robot Communication',
-    message: 'Describe how I could have 1 robot send messages to another robot?'
+    heading: 'Choosing a Component',
+    message: 'Which component should I use to detect my robots movement?'
   },
 ]
 
@@ -24,7 +24,7 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
     <div className="mx-auto max-w-2xl px-4">
       <div className="rounded-lg border bg-background p-8">
         <h1 className="mb-2 text-xl font-semibold">
-          Welcome to Viam Robotics AI Chatbot
+          Welcome to Viam AI Chatbot
         </h1>
         <p className="mb-2 leading-normal text-muted-foreground">
           Ask me any questions about{' '}
