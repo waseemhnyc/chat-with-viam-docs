@@ -3,6 +3,7 @@ import { UseChatHelpers } from 'ai/react'
 import { Button } from '@/components/ui/button'
 import { ExternalLink } from '@/components/external-link'
 import { IconArrowRight } from '@/components/ui/icons'
+import { cn } from '@/lib/utils'
 
 const exampleMessages = [
   {
@@ -26,6 +27,13 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
         <h1 className="mb-2 text-xl font-semibold">
           Welcome to Viam AI Chatbot
         </h1>
+        <p
+          className={cn(
+            'text-left text-xs leading-normal text-muted-foreground'
+          )}
+        >
+          Last Updated 06/26/23
+        </p>
         <p className="mb-2 leading-normal text-muted-foreground">
           Ask me any questions about{' '}
           <a className='text-base font-semibold' href="https://www.viam.com">Viam Robotics</a>{' '}
