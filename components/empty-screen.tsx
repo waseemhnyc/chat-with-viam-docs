@@ -29,10 +29,10 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
         </h1>
         <p
           className={cn(
-            'text-left text-xs leading-normal text-muted-foreground'
+            'text-left text-xs italic leading-normal text-muted-foreground'
           )}
         >
-          Last Updated 06/26/23
+          Docs as of 06/27/23
         </p>
         <p className="mb-2 leading-normal text-muted-foreground">
           Ask me any questions about{' '}
