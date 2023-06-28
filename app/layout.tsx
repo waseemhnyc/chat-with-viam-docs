@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Script from 'next/script'
 
 import { Toaster } from 'react-hot-toast'
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <TailwindIndicator />
         </Providers>
       </body>
+      <Script src="https://tally.so/widgets/embed.js" />
     </html>
   )
 }

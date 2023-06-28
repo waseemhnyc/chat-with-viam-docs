@@ -60,6 +60,9 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
           <a className='text-base font-semibold' href="https://marketplace.visualstudio.com/items?itemName=waseemhnyc.viam-robotics-vsc-code-snippets">Viam Code Extension Tool</a>{' '}
           to help you get started.
         </p>
+        <p className='mb-2 mt-4 text-xs leading-normal text-muted-foreground'>
+          Not helpful or the response looks incorrect? Tell us <a className="underline" href="https://tally.so#tally-open=w2ByJL&tally-emoji-text=🤖&tally-emoji-animation=wave">here</a>. It helps us train future models.
+        </p>
       </div>
     </div>
   )
