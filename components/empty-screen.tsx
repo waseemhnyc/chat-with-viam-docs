@@ -24,12 +24,12 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
   return (
     <div className="mx-auto max-w-2xl px-4">
       <div className="rounded-lg border bg-background p-8">
-        <h1 className="mb-2 text-xl font-semibold">
+        <h1 className="mb-1 text-xl font-semibold">
           Welcome to Viam AI Chatbot
         </h1>
         <p
           className={cn(
-            'text-left text-xs italic leading-normal text-muted-foreground'
+            'mb-2 text-left text-xs italic leading-normal text-muted-foreground'
           )}
         >
           Docs as of 06/27/23
